@@ -2234,13 +2234,13 @@ namespace GeometryGym.Ifc
 		}
 	}
 
-	internal class SerializationIfc
+	public class SerializationIfc
 	{
 		protected DatabaseIfc mDatabase = null;
 		protected CultureInfo mCachedCulture = null;
 		private bool mCachedOwnerHistoryOption = false;
 
-		internal SerializationIfc(DatabaseIfc db)
+		public SerializationIfc(DatabaseIfc db)
 		{
 			mDatabase = db;
 		}
@@ -2381,13 +2381,13 @@ namespace GeometryGym.Ifc
 		}
 		protected void finalizeImport()
 		{
-			Thread.CurrentThread.CurrentCulture = mCachedCulture;
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			mDatabase.postImport();
 			mDatabase.Factory.Options.GenerateOwnerHistory = mCachedOwnerHistoryOption;
 		}
 	}
 
-	internal partial class SerializationIfcSTEP : SerializationIfc
+	public partial class SerializationIfcSTEP : SerializationIfc
 	{
 		private BlockingCollection<string> mDataLines = new BlockingCollection<string>();
 		private ConcurrentBag<ConstructorClass> mConstructorsBag = new ConcurrentBag<ConstructorClass>();
@@ -2425,7 +2425,7 @@ namespace GeometryGym.Ifc
 			{ "DATA;", "DATA;" },
 			{ "END-ISO-10303-21;", "END-ISO-10303-21;" } };
 
-		internal SerializationIfcSTEP(DatabaseIfc db) : base(db) 
+		public SerializationIfcSTEP(DatabaseIfc db) : base(db) 
 		{
 			mDictionary[0] = null;
 		}
@@ -2552,7 +2552,7 @@ namespace GeometryGym.Ifc
 			Debug.WriteLine(DateTime.Now.ToString("HH:mm:ss:ffff") + " - Read Completed " + (DateTime.Now - startTime).ToString());
 		}
 
-		internal void importLines(IEnumerable<string> lines)
+		public void importLines(IEnumerable<string> lines)
 		{
 			initializeImport();
 			mPrimitiveConstructors = new ConcurrentBag<ConstructorClass>();
@@ -2639,7 +2639,7 @@ namespace GeometryGym.Ifc
 			processObjects();
 		}
 
-		private void processObjects()
+		public void processObjects()
 		{
 			ReleaseVersion release = mDatabase.Release;
 
@@ -2743,7 +2743,7 @@ namespace GeometryGym.Ifc
 			}
 		}
 
-		private void processDataLine(string line)
+		public void processDataLine(string line)
 		{
 			if (string.IsNullOrEmpty(line))
 				return;
@@ -2799,7 +2799,7 @@ namespace GeometryGym.Ifc
 				return false;
 			return c == '#';
 		}
-		internal bool processFileHeaderLine(string line)
+		public bool processFileHeaderLine(string line)
 		{
 			string trimmedLine = ParserSTEP.StripComments(line).Trim();
 			ParserSTEP.GetKeyWord(trimmedLine, out int stepID, out string keyword, out string def);
