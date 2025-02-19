@@ -20,8 +20,8 @@ namespace CoreTestApp
 		{
 			Console.WriteLine("Loading IFC file...");
 
-			string fileContents = File.ReadAllText("C:/Users/eaaz3620/OneDrive - ARCADIS/Desktop/Testing/IFC/ORD/30089580-ACD-RG100-MOD-D300.ifc");
-			//string fileContents = File.ReadAllText("TestIFC.ifc");
+			//string fileContents = File.ReadAllText("C:/Users/eaaz3620/OneDrive - ARCADIS/Desktop/Testing/IFC/ORD/30089580-ACD-RG100-MOD-D300.ifc");
+			string fileContents = File.ReadAllText("TestIFC.ifc");
 			//string fileContents = File.ReadAllText("C:\\Temp\\RevitIFC\\TEST - EASTERN PORTAL.ifc");
 
 			Stopwatch sw = Stopwatch.StartNew();
@@ -46,12 +46,16 @@ namespace CoreTestApp
 
 			bool aborted = false;
 			try
-			{
+			{/*
 				Parallel.ForEach(properties, parallelOptions, x =>
 				{
 					step.processDataLine(x);
 					parallelOptions.CancellationToken.ThrowIfCancellationRequested();
 				});
+				*/
+				foreach (var property in properties) { 
+					step.processDataLine(property + ";");
+				}
 			}
 			catch (OperationCanceledException)
 			{
@@ -64,10 +68,14 @@ namespace CoreTestApp
 
 
 			step.processObjects();
-
+			
 			//Console.WriteLine(sw.Elapsed);
-
 			//File.WriteAllLines("C:/temp/customParser.txt", properties);
+			var propsets = db.Where(x => x.GetType() == typeof(IfcPropertySet) && (x as IfcPropertySet).Name == "General");
+			foreach(IfcPropertySet propset in propsets)
+			{
+				var getProps = propset.HasProperties;
+			}
 
 			Console.WriteLine(sw.Elapsed);
 

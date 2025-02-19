@@ -1602,7 +1602,9 @@ namespace GeometryGym.Ifc
 			string globalId = ParserSTEP.StripString(str, ref pos, len);
 			if (!string.IsNullOrEmpty(globalId) && string.Compare(GlobalId, globalId, true) != 0)
 				GlobalId = globalId;
-			mOwnerHistory = dictionary[ParserSTEP.StripLink(str, ref pos, len)] as IfcOwnerHistory;
+			if (dictionary.TryGetValue(ParserSTEP.StripLink(str, ref pos, len), out BaseClassIfc owner))
+				mOwnerHistory = owner as IfcOwnerHistory;
+			//mOwnerHistory = dictionary[ParserSTEP.StripLink(str, ref pos, len)] as IfcOwnerHistory;
 			mName = ParserSTEP.Decode(ParserSTEP.StripString(str, ref pos, len));
 			mDescription = ParserSTEP.Decode(ParserSTEP.StripString(str, ref pos, len));
 		}
